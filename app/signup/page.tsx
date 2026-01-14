@@ -1,28 +1,83 @@
+// "use client";
+
+// import { useState } from "react";
+
 // export default function SignupPage() {
+//   const [formData, setFormData] = useState({
+//     fullName: "",
+//     email: "",
+//     password: "",
+//   });
+
+//   const handleChange = (e: any) => {
+//     setFormData({ ...formData, [e.target.name]: e.target.value });
+//   };
+
+//   const handleSubmit = async (e: any) => {
+//     e.preventDefault();
+
+//     try {
+//       const res = await fetch(
+//         process.env.NEXT_PUBLIC_SLEEKCMS_FORM_API as string,
+//         {
+//           method: "POST",
+//           headers: { "Content-Type": "application/json" },
+//           body: JSON.stringify({
+//             form_type: "signup",
+//             ...formData,
+//           }),
+//         }
+//       );
+
+//       if (!res.ok) throw new Error("Submit failed");
+
+//       alert("Signup form submitted 🎉");
+//     } catch (err) {
+//       console.error(err);
+//       alert("Signup failed ❌");
+//     }
+//   };
+
 //   return (
-//     <div className="p-8 max-w-md mx-auto">
-//       <h1 className="text-3xl font-bold mb-6">📝 Create Account</h1>
+//     <div className="min-h-screen flex items-center justify-center"
+//       style={{ background: "linear-gradient(#6ec6ff, #9fd3ff)" }}
+//     >
+//       <form
+//         onSubmit={handleSubmit}
+//         className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-lg border text-black"
+//       >
+//         <h1 className="text-3xl font-bold text-center mb-4">📝 Create Account</h1>
 
-//       <form className="space-y-4">
+//         <label>Full Name</label>
 //         <input
-//           type="text"
-//           placeholder="Full Name"
-//           className="w-full p-2 border rounded"
+//           name="fullName"
+//           onChange={handleChange}
+//           className="w-full p-2 border rounded mb-3"
+//           placeholder="Your name"
 //         />
 
+//         <label>Email</label>
 //         <input
+//           name="email"
 //           type="email"
-//           placeholder="Email"
-//           className="w-full p-2 border rounded"
+//           onChange={handleChange}
+//           className="w-full p-2 border rounded mb-3"
+//           placeholder="Your email"
 //         />
 
+//         <label>Password</label>
 //         <input
+//           name="password"
 //           type="password"
-//           placeholder="Password"
-//           className="w-full p-2 border rounded"
+//           onChange={handleChange}
+//           className="w-full p-2 border rounded mb-3"
+//           placeholder="Create password"
 //         />
 
-//         <button className="bg-blue-600 text-white px-4 py-2 rounded w-full">
+//         <button
+//           type="submit"
+//           className="w-full bg-orange-500 text-white py-2 rounded font-semibold"
+//         >
 //           Sign Up
 //         </button>
 //       </form>
@@ -30,44 +85,70 @@
 //   );
 // }
 
-
 "use client";
+
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function SignupPage() {
-  const [submitted, setSubmitted] = useState<any>(null);
+  const router = useRouter();
 
-  const handleSubmit = (e: any) => {
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e: any) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    setSubmitted({
-      name: e.target.name.value,
-      email: e.target.email.value,
-      password: e.target.password.value,
-    });
+    try {
+      const res = await fetch(process.env.NEXT_PUBLIC_SLEEKCMS_FORM_API as string, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          form_type: "signup",
+          ...formData,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Submit failed");
+
+      alert("Signup successful 🎉");
+
+      // ⭐ redirect after signup
+      router.push("/");
+    } catch (err) {
+      console.error(err);
+      alert("Signup failed ❌");
+    }
   };
 
   return (
-    <div className="p-8 max-w-md mx-auto">
-      <h1 className="text-3xl font-bold mb-4 text-center">📝 Create Account</h1>
+    <div className="min-h-screen flex items-center justify-center"
+      style={{ background: "linear-gradient(#6ec6ff, #9fd3ff)" }}
+    >
+      <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-lg border text-black">
 
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <input name="name" placeholder="Full Name" className="w-full p-2 border" />
-        <input name="email" placeholder="Email" className="w-full p-2 border" />
-        <input name="password" type="password" placeholder="Password" className="w-full p-2 border" />
+        <h1 className="text-3xl font-bold text-center mb-4">📝 Create Account</h1>
 
-        <button className="bg-blue-600 text-white w-full py-2 rounded">
+        <label>Full Name</label>
+        <input name="fullName" onChange={handleChange} className="w-full p-2 border rounded mb-3" />
+
+        <label>Email</label>
+        <input name="email" type="email" onChange={handleChange} className="w-full p-2 border rounded mb-3" />
+
+        <label>Password</label>
+        <input name="password" type="password" onChange={handleChange} className="w-full p-2 border rounded mb-3" />
+
+        <button type="submit" className="w-full bg-orange-500 text-white py-2 rounded font-semibold">
           Sign Up
         </button>
       </form>
-
-      {submitted && (
-        <div className="mt-6 border p-3 rounded bg-black-100">
-          <p><b>Name:</b> {submitted.name}</p>
-          <p><b>Email:</b> {submitted.email}</p>
-          <p><b>Password:</b> {submitted.password}</p>
-        </div>
-      )}
     </div>
   );
 }
